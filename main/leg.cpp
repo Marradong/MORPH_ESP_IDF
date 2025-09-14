@@ -1,21 +1,66 @@
-#include "kinematics.h"
+#include "leg.h"
 
-Kinematics::Kinematics() {
-    // Constructor implementation
+Leg::Leg(ServoDriver& servodriver, int servo_phi_2, int servo_phi_5) 
+    : servodriver(servodriver), stepindex(0) {
 }
 
-void Kinematics::ik(KinematicsData& data, double x, double y) {
+void Leg::driveLeg(double phi_2, double phi_5) {
+    servodriver.driveServo(servo_phi_2, phi_2);
+    servodriver.driveServo(servo_phi_5, phi_5);
+}
+
+void Leg::driveFullStep(double stepLength, double stepHeight) {
+    TrajectoryData data;
+    generateFullStep(data, stepLength, stepHeight);
+    for (int i = 0; i < data.size; i++) {
+        driveLeg(data.kinematics[i].phi_2, data.kinematics[i].phi_5);
+        delay(15);
+    }
+    stepindex = 0;
+}
+
+void Leg::driveNextStep(double stepLength, double stepHeight) {
+    KinematicsData data;
+    generateNextStep(data, stepLength, stepHeight, stepindex);
+    driveLeg(data.phi_2, data.phi_5);
+    stepindex = (stepindex + 1) % RESOLUTION;
+}
+
+void Leg::generateFullStep(TrajectoryData& data, double stepLength, double stepHeight) {
+    data.size = RESOLUTION;
+
+    for (int i = 0; i < HALF_RESOLUTION; i++) {
+        generateNextStep(data.kinematics[i], stepLength, stepHeight, i);
+        generateNextStep(data.kinematics[i+HALF_RESOLUTION], stepLength, stepHeight, i+HALF_RESOLUTION);
+    }
+}
+
+void Leg::generateNextStep(KinematicsData& data, double stepLength, double stepHeight, int idx) {
+    if (idx < HALF_RESOLUTION){
+        double sigma = (RAD_360 * stepindex * DT) / (LAMBDA * TS);
+        ik(data, 
+            ((stepLength * (sigma - sin(sigma)) / (RAD_360))) + (-stepLength/2) , 
+            -((stepHeight * (1 - cos(sigma)) / 2)) + (WORKSPACE_Y_MIN + stepHeight)
+        );
+    }
+    else if (idx < RESOLUTION){
+        double dx = stepLength / (HALF_RESOLUTION - 1);
+        ik(data, 
+            (stepLength/2) - stepindex * dx, 
+            WORKSPACE_Y_MIN + stepHeight
+        );
+    }
+}
+
+void Leg::ik(KinematicsData& data, double x, double y) {
     data.x = x;
     data.y = y;
 
     if(x < WORKSPACE_X_MIN || x > WORKSPACE_X_MAX || y < WORKSPACE_Y_MIN || y > WORKSPACE_Y_MAX) {
-        // Serial.println("Position out of workspace");
         data.phi_2 = -1;
         data.phi_5 = -1;
         return;
     }
-
-    // Serial.print("Calculating IK for ("); Serial.print(x); Serial.print(", "); Serial.print(y); Serial.println(")");
 
     // Calculate coefficients
     double A_2 = -L_2_5 * (2*x + L_1);
@@ -38,17 +83,13 @@ void Kinematics::ik(KinematicsData& data, double x, double y) {
     data.phi_2 = (phi_2_n >= RAD_90 && phi_2_n <= RAD_270) ? phi_2_n : phi_2_p;
     data.phi_5 = ((phi_5_n >= 0.0 && phi_5_n <= RAD_90) || (phi_5_n >= RAD_270 && phi_5_n <= RAD_360)) ? phi_5_n : phi_5_p;
 
-    // Serial.print("IK result (rad): ("); Serial.print(data.phi_2); Serial.print(", "); Serial.print(data.phi_5); Serial.println(")");
-
     data.phi_2 = (data.phi_2 - RAD_90)*RAD_TO_DEG;
     data.phi_5 = (data.phi_5 >= RAD_270 ? RAD_450 - data.phi_5 : RAD_90 - data.phi_5)*RAD_TO_DEG;
-
-    // Serial.print("IK result (deg): ("); Serial.print(data.phi_2); Serial.print(", "); Serial.print(data.phi_5); Serial.println(")");
 
     return;
 }
 
-void Kinematics::fk(KinematicsData& data, double phi_2, double phi_5) {
+void Leg::fk(KinematicsData& data, double phi_2, double phi_5) {
     phi_2 = phi_2*DEG_TO_RAD;
     phi_2 += RAD_90;
     phi_5 = phi_5*DEG_TO_RAD;
@@ -70,6 +111,6 @@ void Kinematics::fk(KinematicsData& data, double phi_2, double phi_5) {
     return;
 }
 
-double Kinematics::mod(double a, double b) {
+double Leg::mod(double a, double b) {
     return a - b * floor(a / b);
 }

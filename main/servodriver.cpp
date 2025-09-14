@@ -35,19 +35,7 @@ void ServoDriver::driveServo(uint8_t servo, double angle) {
         return;
     }
     
-    Serial.print("Setting servo "); Serial.print(servo); Serial.print(" pulse to "); Serial.print(pulse); Serial.print(" out of 4096\n");
-
     _servodriver.setPin(servo, pulse);
-}
-
-void ServoDriver::driveServo(uint8_t servo, uint16_t pwm) {
-    if (pwm < 0 || pwm > 4095) {
-        return;
-    }
-
-    Serial.print("Setting servo "); Serial.print(servo); Serial.print(" pulse to "); Serial.print(pwm); Serial.print(" out of 4096\n");
-
-    _servodriver.setPin(servo, pwm);
 }
 
 long ServoDriver::pulseFromAngle(uint8_t servo, double angle) {
@@ -56,41 +44,4 @@ long ServoDriver::pulseFromAngle(uint8_t servo, double angle) {
     }
 
     return map(angle, SERVO_MIN_ANGLE, SERVO_MAX_ANGLE, SERVO_BOTTOM[servo], SERVO_TOP[servo]);
-}
-
-void ServoDriver::sweepServo(uint8_t servo) {
-    if (servo < 0 || servo >= SERVO_NUMBER) {
-        return;
-    }
-    
-    Serial.print("Sweeping servo "); Serial.print(servo); Serial.print(" forward\n");
-    for (uint16_t pulselen = SERVO_MIN_PULSE[servo]; pulselen <= SERVO_MAX_PULSE[servo]; pulselen+=2) {
-        driveServo(servo, pulselen);
-        delay(10);
-    }
-    
-
-    Serial.print("Sweeping servo "); Serial.print(servo); Serial.print(" back\n");
-    for (uint16_t pulselen = SERVO_MAX_PULSE[servo]; pulselen >= SERVO_MIN_PULSE[servo]; pulselen-=2) {
-        driveServo(servo, pulselen);
-        delay(10);
-    }
-}
-
-void ServoDriver::driveToBottom(uint8_t servo) {
-    if (servo < 0 || servo >= SERVO_NUMBER) {
-        return;
-    }
-
-    Serial.print("Driving servo "); Serial.print(servo); Serial.print(" to bottom\n");
-    driveServo(servo, SERVO_BOTTOM[servo]);
-}
-
-void ServoDriver::driveToTop(uint8_t servo) {
-    if (servo < 0 || servo >= SERVO_NUMBER) {
-        return;
-    }
-
-    Serial.print("Driving servo "); Serial.print(servo); Serial.print(" to top\n");
-    driveServo(servo, SERVO_TOP[servo]);
 }

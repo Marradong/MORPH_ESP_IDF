@@ -34,7 +34,8 @@
 #define SERVO_BLF 6 // 108, 544
 #define SERVO_BLB 7 // 108, 548
 
-#define RESOLUTION 50
+#define RESOLUTION 100
+#define HALF_RESOLUTION (RESOLUTION/2)
 
 #define WORKSPACE_X_MIN -50
 #define WORKSPACE_X_MAX 50
@@ -43,6 +44,6 @@
 
 #define TS 1.0
 #define LAMBDA 0.5
-#define DT ((LAMBDA*TS)/(RESOLUTION-1))
+#define DT ((LAMBDA*TS)/(HALF_RESOLUTION-1))
 
 #endif

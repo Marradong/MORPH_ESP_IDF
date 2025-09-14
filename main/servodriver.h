@@ -35,10 +35,6 @@ public:
     ServoDriver();
     void begin();
     void driveServo(uint8_t servo, double angle);
-    void driveServo(uint8_t servo, uint16_t pwm);
-    void sweepServo(uint8_t servo);
-    void driveToTop(uint8_t servo);
-    void driveToBottom(uint8_t servo);
 
 private:
     Adafruit_PWMServoDriver  _servodriver;
