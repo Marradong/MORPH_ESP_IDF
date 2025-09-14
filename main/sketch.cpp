@@ -1,7 +1,3 @@
-// SPDX-License-Identifier: Apache-2.0
-// Copyright 2021 Ricardo Quesada
-// http://retro.moe/unijoysticle2
-
 #include <Arduino.h>
 #include <Wire.h>
 #include "batterymonitor.h"
@@ -97,5 +93,5 @@ void loop() {
     //     servodriver.driveServo(servo8, data.kinematics[i].phi_5);
     //     delay(15);
     // }
-  delay(1000);
+  delay(150);
 }

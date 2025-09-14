@@ -102,3 +102,51 @@ void BLEController::process() {
         }
     }
 }
+
+bool BLEController::home() {
+    if (ctrl == nullptr) {
+        return false;
+    }
+    return ctrl->miscButtons() == 0x01;
+}
+
+bool BLEController::left() {
+    if (ctrl == nullptr) {
+        return false;
+    }
+    return ctrl->dpad() == 0x08;
+}
+
+bool BLEController::right() {
+    if (ctrl == nullptr) {
+        return false;
+    }
+    return ctrl->dpad() == 0x04;
+}
+
+bool BLEController::up() {
+    if (ctrl == nullptr) {
+        return false;
+    }
+    return ctrl->dpad() == 0x01;
+}
+
+bool BLEController::down() {
+    if (ctrl == nullptr) {
+        return false;
+    }
+    return ctrl->dpad() == 0x02;
+}
+uint32_t BLEController::leftRight() {
+    if (ctrl == nullptr) {
+        return 0;
+    }
+    return ctrl->axisX();
+}
+
+uint32_t BLEController::upDown() {
+    if (ctrl == nullptr) {
+        return 0;
+    }
+    return ctrl->axisY();
+}

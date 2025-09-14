@@ -1,28 +1,30 @@
 #include "trajectory.h"
 
-Kinematics kinematics;
-
-Trajectory::Trajectory() {
+Trajectory::Trajectory(Kinematics& kinematics) : kinematics(kinematics) {
 }
 
-void Trajectory::generate(TrajectoryData& data, double Ts, double lmda, double stepLength, double stepHeight, double xbound, double ybound) {
+void Trajectory::fullStep(TrajectoryData& data, double stepLength, double stepHeight) {
     data.size = RESOLUTION * 2;
 
-    double dt = (lmda * Ts) / (RESOLUTION - 1);
-    double dx = stepLength / (RESOLUTION - 1);
-
     for (int i = 0; i < RESOLUTION; i++) {
-        double t = i * dt;
-        double sigma = (RAD_360 * t) / (lmda * Ts);
+        nextStep(data.kinematics[i], stepLength, stepHeight, i);
+        nextStep(data.kinematics[i+RESOLUTION], stepLength, stepHeight, i+RESOLUTION);
+    }
+}
 
-        kinematics.ik(data.kinematics[i], 
-            ((stepLength * (sigma - sin(sigma)) / (RAD_360))) + xbound , 
-            -((stepHeight * (1 - cos(sigma)) / 2)) + ybound
+void Trajectory::nextStep(Kinematics::KinematicsData& data, double stepLength, double stepHeight, int idx) {
+    if (idx < RESOLUTION){
+        double sigma = (RAD_360 * idx * DT) / (LAMBDA * TS);
+        kinematics.ik(data, 
+            ((stepLength * (sigma - sin(sigma)) / (RAD_360))) + (-stepLength/2) , 
+            -((stepHeight * (1 - cos(sigma)) / 2)) + (WORKSPACE_Y_MIN + stepHeight)
         );
-
-        kinematics.ik(data.kinematics[i+RESOLUTION], 
-            -xbound - i * dx, 
-            ybound
+    }
+    else if (idx < RESOLUTION*2){
+        double dx = stepLength / (RESOLUTION - 1);
+        kinematics.ik(data, 
+            (stepLength/2) - idx * dx, 
+            WORKSPACE_Y_MIN + stepHeight
         );
     }
 }

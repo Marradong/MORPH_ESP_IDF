@@ -12,6 +12,13 @@ public:
     void begin();
     void print();
     void process();
+    bool home();
+    bool left();
+    bool right();
+    bool up();
+    bool down();
+    uint32_t leftRight();
+    uint32_t upDown();
 
 private:
     ControllerPtr ctrl;

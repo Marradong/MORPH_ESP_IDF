@@ -11,11 +11,12 @@ public:
         Kinematics::KinematicsData kinematics[RESOLUTION*2];
         int size;
     };
-    Trajectory();
-    void generate(TrajectoryData& data, double Ts, double lmda, double stepLength, double stepHeight, double xbound, double ybound);
+    Trajectory(Kinematics& kinematics);
+    void fullStep(TrajectoryData& data, double stepLength, double stepHeight);
+    void nextStep(Kinematics::KinematicsData& data, double stepLength, double stepHeight, int idx);
 
 private:
-
+    Kinematics& kinematics;
 };
 
 #endif

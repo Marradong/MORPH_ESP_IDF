@@ -83,7 +83,7 @@ class Controller {
     int32_t axisRX() const { return _data.gamepad.axis_rx; }
     int32_t axisRY() const { return _data.gamepad.axis_ry; }
 
-    // Brake & Throttle
+    // Right and Left Triggers
     int32_t triggerL() const { return _data.gamepad.triggerL; }
     int32_t triggerR() const { return _data.gamepad.triggerR; }
 

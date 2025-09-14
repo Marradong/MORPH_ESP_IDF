@@ -41,4 +41,8 @@
 #define WORKSPACE_Y_MIN 50
 #define WORKSPACE_Y_MAX 100
 
+#define TS 1.0
+#define LAMBDA 0.5
+#define DT ((LAMBDA*TS)/(RESOLUTION-1))
+
 #endif
