@@ -1,7 +1,19 @@
 #include "leg.h"
 
-Leg::Leg(ServoDriver& servodriver, int servo_phi_2, int servo_phi_5) 
-    : servodriver(servodriver), stepindex(0) {
+Leg::Leg(ServoDriver& servodriver, int servo_phi_2, int servo_phi_5, bool isFront) : 
+    servodriver(servodriver), 
+    servo_phi_2(servo_phi_2), 
+    servo_phi_5(servo_phi_5), 
+    isFront(isFront), 
+    isReverse(false),
+    stepindex(isFront ? HALF_RESOLUTION : 0) {
+}
+
+void Leg::Home() {
+    KinematicsData data;
+    ik(data, isFront ? WORKSPACE_X_MAX : WORKSPACE_X_MIN, WORKSPACE_Y_MAX);
+    driveLeg(data.phi_2, data.phi_5);
+    stepindex = isFront ? HALF_RESOLUTION : 0;
 }
 
 void Leg::driveLeg(double phi_2, double phi_5) {
@@ -16,14 +28,18 @@ void Leg::driveFullStep(double stepLength, double stepHeight) {
         driveLeg(data.kinematics[i].phi_2, data.kinematics[i].phi_5);
         delay(15);
     }
-    stepindex = 0;
+    stepindex = isFront ? HALF_RESOLUTION : 0;
 }
 
 void Leg::driveNextStep(double stepLength, double stepHeight) {
+    Console.printf("Next Step: %d , Servos: %d, %d\n", stepindex, servo_phi_2, servo_phi_5); 
     KinematicsData data;
     generateNextStep(data, stepLength, stepHeight, stepindex);
+    Console.printf("Drive leg: %d, %d\n", stepindex, data.phi_2, data.phi_5); 
     driveLeg(data.phi_2, data.phi_5);
-    stepindex = (stepindex + 1) % RESOLUTION;
+    stepindex = isReverse ? (stepindex - 1) : (stepindex + 1);
+    if (stepindex >= RESOLUTION) stepindex = 0;
+    if (stepindex < 0) stepindex = RESOLUTION - 1;
 }
 
 void Leg::generateFullStep(TrajectoryData& data, double stepLength, double stepHeight) {
@@ -37,7 +53,7 @@ void Leg::generateFullStep(TrajectoryData& data, double stepLength, double stepH
 
 void Leg::generateNextStep(KinematicsData& data, double stepLength, double stepHeight, int idx) {
     if (idx < HALF_RESOLUTION){
-        double sigma = (RAD_360 * stepindex * DT) / (LAMBDA * TS);
+        double sigma = (RAD_360 * idx * DT) / (LAMBDA * TS);
         ik(data, 
             ((stepLength * (sigma - sin(sigma)) / (RAD_360))) + (-stepLength/2) , 
             -((stepHeight * (1 - cos(sigma)) / 2)) + (WORKSPACE_Y_MIN + stepHeight)
@@ -46,7 +62,7 @@ void Leg::generateNextStep(KinematicsData& data, double stepLength, double stepH
     else if (idx < RESOLUTION){
         double dx = stepLength / (HALF_RESOLUTION - 1);
         ik(data, 
-            (stepLength/2) - stepindex * dx, 
+            (stepLength/2) - (idx-HALF_RESOLUTION) * dx, 
             WORKSPACE_Y_MIN + stepHeight
         );
     }
@@ -57,6 +73,7 @@ void Leg::ik(KinematicsData& data, double x, double y) {
     data.y = y;
 
     if(x < WORKSPACE_X_MIN || x > WORKSPACE_X_MAX || y < WORKSPACE_Y_MIN || y > WORKSPACE_Y_MAX) {
+        Console.printf("IK out of bounds: x=%.2f, y=%.2f\n", x, y);
         data.phi_2 = -1;
         data.phi_5 = -1;
         return;
@@ -113,4 +130,12 @@ void Leg::fk(KinematicsData& data, double phi_2, double phi_5) {
 
 double Leg::mod(double a, double b) {
     return a - b * floor(a / b);
+}
+
+void Leg::Reverse() {
+    isReverse = true;
+}
+
+void Leg::Forward() {
+    isReverse = false;
 }

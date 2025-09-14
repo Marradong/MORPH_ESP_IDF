@@ -2,6 +2,7 @@
 #define LEG_H
 
 #include <Arduino.h>
+#include <ArduinoConsole.h>
 #include "servodriver.h"
 #include "constants.h"
 
@@ -19,15 +20,20 @@ public:
         int size;
     };
 
-    Leg(ServoDriver& servodriver, int servo_phi_2, int servo_phi_5);
+    Leg(ServoDriver& servodriver, int servo_phi_2, int servo_phi_5, bool isFront);
     void driveFullStep(double stepLength, double stepHeight);
     void driveNextStep(double stepLength, double stepHeight);
+    void Home();
+    void Reverse();
+    void Forward();
 
 private:
     // Servo
     ServoDriver& servodriver;
     int servo_phi_2;
     int servo_phi_5;
+    bool isFront;
+    bool isReverse;
     void driveLeg(double phi_2, double phi_5);
     
     // Trajectory

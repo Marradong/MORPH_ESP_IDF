@@ -1,97 +1,149 @@
 #include <Arduino.h>
 #include <Wire.h>
 #include "batterymonitor.h"
-#include "imu.h"
-#include "servodriver.h"
-#include "kinematics.h"
-#include "trajectory.h"
 #include "controller.h"
+#include "imu.h"
+#include "leg.h"
+#include "servodriver.h"
 
 BLEController blecontroller;
 BatteryMonitor batterymonitor;
 IMU imu;
 ServoDriver servodriver;
-Trajectory trajectory;
 
-Trajectory::TrajectoryData data;
+uint8_t STATE = STOPPED;
+
+Leg legFL(servodriver, SERVO_FLF, SERVO_FLB, true);
+Leg legFR(servodriver, SERVO_FRF, SERVO_FRB, true);
+Leg legBL(servodriver, SERVO_BLF, SERVO_BLB, false);
+Leg legBR(servodriver, SERVO_BRF, SERVO_BRB, false);
+
+void home() {
+  legFL.Home();
+  legFR.Home();
+  legBL.Home();
+  legBR.Home();
+  delay(500);
+}
+
+void forward() {
+  legFL.Forward();
+  legFR.Forward();
+  legBL.Forward();
+  legBR.Forward();
+
+  legFL.driveNextStep(100, 50);
+  legBR.driveNextStep(100, 50);
+  legFR.driveNextStep(100, 50);
+  legBL.driveNextStep(100, 50);
+}
+
+void reverse() {
+  legFL.Reverse();
+  legFR.Reverse();
+  legBL.Reverse();
+  legBR.Reverse();
+
+  legFL.driveNextStep(100, 50);
+  legBR.driveNextStep(100, 50);
+  legFR.driveNextStep(100, 50);
+  legBL.driveNextStep(100, 50);
+}
+
+void left() {
+  legFL.Forward();
+  legFR.Forward();
+  legBL.Forward();
+  legBR.Forward();
+
+  legFL.driveNextStep(50, 50);
+  legBR.driveNextStep(100, 50);
+  legFR.driveNextStep(100, 50);
+  legBL.driveNextStep(50, 50);
+}
+
+void right() {
+  legFL.Forward();
+  legFR.Forward();
+  legBL.Forward();
+  legBR.Forward();
+
+  legFL.driveNextStep(100, 50);
+  legBR.driveNextStep(50, 50);
+  legFR.driveNextStep(50, 50);
+  legBL.driveNextStep(100, 50);
+}
+
+void updateState() {
+  if (STATE != HOME && blecontroller.home()) {
+    STATE = HOME;
+    Console.println("HOME");
+  } else if (STATE != FORWARD && blecontroller.up()) {
+    STATE = FORWARD;
+    Console.println("FORWARD");
+  } else if (STATE != REVERSE && blecontroller.down()) {
+    STATE = REVERSE;
+    Console.println("REVERSE");
+  } else if (STATE != LEFT && blecontroller.left()) {
+    STATE = LEFT;
+    Console.println("LEFT");
+  } else if (STATE != RIGHT && blecontroller.right()) {
+    STATE = RIGHT;
+    Console.println("RIGHT");
+  } else if (STATE != STOPPED && !blecontroller.up() && !blecontroller.down() && !blecontroller.left() && !blecontroller.right() && !blecontroller.home()) {
+    STATE = STOPPED;
+    Console.println("STOPPED");
+  }
+}
+
 
 // Arduino setup function. Runs in CPU 1
 void setup() {
-    blecontroller.begin();
-    Wire.begin(); // join i2c bus with SDA and SCL pins
-    delay(10);
+  blecontroller.begin();
+  Wire.begin();  // join i2c bus with SDA 21 and SCL 22 pins
+  delay(10);
 
-    // batterymonitor.begin();
+  // batterymonitor.begin();
 
-    //imu.begin();
+  // imu.begin();
 
-    servodriver.begin();    
-    delay(100);
+  servodriver.begin();
+  delay(100);
 }
 
 // Arduino loop function. Runs in CPU 1.
 void loop() {
-    blecontroller.process();
+  blecontroller.process();
 
-    // batterymonitor.printData();
-    // Serial.println();
-    // delay(100);
+  // batterymonitor.printData();
+  // Serial.println();
+  // delay(100);
 
-    // imu.printData();
-    // Serial.println();
-    // delay(100);
-    
-    // trajectory.generate(data, 1, 0.5, 100.0, 50.0, -50.0, 100.0);
-  
-    // uint8_t servo1 = SERVO_FLF;
-    // uint8_t servo2 = SERVO_FLB;
-    // uint8_t servo3 = SERVO_BLF;
-    // uint8_t servo4 = SERVO_BLB;
-    // uint8_t servo5 = SERVO_FRF;
-    // uint8_t servo6 = SERVO_FRB;
-    // uint8_t servo7 = SERVO_BRF;
-    // uint8_t servo8 = SERVO_BRB;
+  // imu.printData();
+  // Serial.println();
+  // delay(100);
 
-    // int j = 0;
+  updateState();
 
-    // for (int i = 0; i < data.size; i++) {
+  switch (STATE) {
+    case HOME:
+      home();
+      break;
+    case FORWARD:
+      forward();
+      break;
+    case REVERSE:
+      reverse();
+      break;
+    case LEFT:
+      left();
+      break;
+    case RIGHT:
+      right();
+      break;
+    case STOPPED:
+      break;
+  }
 
-    //     if (data.kinematics[i].phi_2 < 0 || data.kinematics[i].phi_5 < 0 || data.kinematics[i].phi_2 > 180 || data.kinematics[i].phi_5 > 180) {
-    //     Serial.println("Skipping point due to IK error");
-    //     continue;
-    //     }
-
-    //     j = i+RESOLUTION < data.size ? i+RESOLUTION : i-RESOLUTION < 0 ? 0 : i-RESOLUTION;
-
-    //     servodriver.driveServo(servo1, data.kinematics[i].phi_2);
-    //     servodriver.driveServo(servo2, data.kinematics[i].phi_5);
-    //     servodriver.driveServo(servo3, data.kinematics[j].phi_2);
-    //     servodriver.driveServo(servo4, data.kinematics[j].phi_5);
-    //     servodriver.driveServo(servo5, data.kinematics[j].phi_2);
-    //     servodriver.driveServo(servo6, data.kinematics[j].phi_5);
-    //     servodriver.driveServo(servo7, data.kinematics[i].phi_2);
-    //     servodriver.driveServo(servo8, data.kinematics[i].phi_5);
-    //     delay(15);
-    // }
-
-    // for (int i = 0; i < data.size; i++) {
-
-    //     if (data.kinematics[i].phi_2 < 0 || data.kinematics[i].phi_5 < 0 || data.kinematics[i].phi_2 > 180 || data.kinematics[i].phi_5 > 180) {
-    //     Serial.println("Skipping point due to IK error");
-    //     continue;
-    //     }
-
-    //     j = i+RESOLUTION < data.size ? i+RESOLUTION : i-RESOLUTION < 0 ? 0 : i-RESOLUTION;
-
-    //     servodriver.driveServo(servo1, data.kinematics[i].phi_2);
-    //     servodriver.driveServo(servo2, data.kinematics[i].phi_5);
-    //     servodriver.driveServo(servo3, data.kinematics[j].phi_2);
-    //     servodriver.driveServo(servo4, data.kinematics[j].phi_5);
-    //     servodriver.driveServo(servo5, data.kinematics[j].phi_2);
-    //     servodriver.driveServo(servo6, data.kinematics[j].phi_5);
-    //     servodriver.driveServo(servo7, data.kinematics[i].phi_2);
-    //     servodriver.driveServo(servo8, data.kinematics[i].phi_5);
-    //     delay(15);
-    // }
-  delay(150);
+  delay(25);
 }

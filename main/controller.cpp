@@ -46,7 +46,7 @@ void BLEController::_onConnected(ControllerPtr ctl) {
     }
 }
 
-void BLEController::_onDisconnected(ControllerPtr ctl) {
+void BLEController::onDisconnected(ControllerPtr ctl) {
     if (instance) instance->_onDisconnected(ctl);  // forward to the real instance
 }
 
@@ -79,8 +79,8 @@ void BLEController::print() {
         ctrl->axisY(),        // (-511 - 512) left Y axis
         ctrl->axisRX(),       // (-511 - 512) right X axis
         ctrl->axisRY(),       // (-511 - 512) right Y axis
-        ctrl->triggerL(),     // (0 - 1023): trigger L button
-        ctrl->triggerR(),     // (0 - 1023): trigger R button
+        ctrl->brake(),     // (0 - 1023): trigger L button
+        ctrl->throttle(),     // (0 - 1023): trigger R button
         ctrl->miscButtons(),  // bitmask of pressed "misc" buttons
         ctrl->gyroX(),        // Gyro X
         ctrl->gyroY(),        // Gyro Y
@@ -98,7 +98,7 @@ void BLEController::process() {
 
     if (ctrl && ctrl->isConnected() && ctrl->hasData()) {
         if (ctrl->isGamepad()) {
-            print();
+            // print();
         }
     }
 }

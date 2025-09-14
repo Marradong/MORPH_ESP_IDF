@@ -25,14 +25,14 @@
 #define SERVO_MAX_ANGLE 180.0
 #define SERVO_MIN_ANGLE 0.0
 
-#define SERVO_BRB 0 // 108, 544
-#define SERVO_BRF 1 // 108, 548
-#define SERVO_FRF 2 // 108, 544
-#define SERVO_FRB 3 // 108, 548
-#define SERVO_FLF 4 // 108, 544
-#define SERVO_FLB 5 // 108, 548
-#define SERVO_BLF 6 // 108, 544
-#define SERVO_BLB 7 // 108, 548
+#define SERVO_FLB 0 // 108, 544
+#define SERVO_FLF 1 // 108, 548
+#define SERVO_BLF 2 // 108, 544
+#define SERVO_BLB 3 // 108, 548
+#define SERVO_BRF 4 // 108, 544
+#define SERVO_BRB 5 // 108, 548
+#define SERVO_FRF 6 // 108, 544
+#define SERVO_FRB 7 // 108, 548
 
 #define RESOLUTION 100
 #define HALF_RESOLUTION (RESOLUTION/2)
@@ -45,5 +45,12 @@
 #define TS 1.0
 #define LAMBDA 0.5
 #define DT ((LAMBDA*TS)/(HALF_RESOLUTION-1))
+
+#define HOME 0
+#define FORWARD 1
+#define REVERSE 2
+#define LEFT 3
+#define RIGHT 4
+#define STOPPED 5
 
 #endif

@@ -130,7 +130,7 @@ typedef enum {
 //
 //  Left             Center            Right
 //
-//  triggerL: 0-1023    Menu button       triggerR: 0-1023
+//  brake: 0-1023    Menu button       throttle: 0-1023
 //  L-shoulder button                  R-shoulder button
 //  L-trigger button                   R-trigger button
 //  d-pad                              buttons: A,B,X,Y,
@@ -148,8 +148,8 @@ typedef struct {
     int32_t axis_ry;
 
     // Usage Page: 0x02 (Sim controls)
-    int32_t triggerL;
-    int32_t triggerR;
+    int32_t brake;
+    int32_t throttle;
 
     // Usage Page: 0x09 (Button)
     uint16_t buttons;
@@ -201,9 +201,9 @@ typedef struct {
     uint8_t axis_rx_inverted;
     uint8_t axis_ry_inverted;
 
-    // Remaps for triggerL / triggerR
-    uint8_t triggerL;
-    uint8_t triggerR;
+    // Remaps for brake / throttle
+    uint8_t brake;
+    uint8_t throttle;
 } uni_gamepad_mappings_t;
 
 extern const uni_gamepad_mappings_t GAMEPAD_DEFAULT_MAPPINGS;

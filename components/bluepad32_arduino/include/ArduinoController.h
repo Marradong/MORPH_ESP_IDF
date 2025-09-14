@@ -84,8 +84,8 @@ class Controller {
     int32_t axisRY() const { return _data.gamepad.axis_ry; }
 
     // Right and Left Triggers
-    int32_t triggerL() const { return _data.gamepad.triggerL; }
-    int32_t triggerR() const { return _data.gamepad.triggerR; }
+    int32_t brake() const { return _data.gamepad.brake; }
+    int32_t throttle() const { return _data.gamepad.throttle; }
 
     // Gyro / Accel
     int32_t gyroX() const { return _data.gamepad.gyro[0]; }
