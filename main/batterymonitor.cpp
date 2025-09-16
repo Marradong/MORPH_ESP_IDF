@@ -3,24 +3,24 @@
 BatteryMonitor::BatteryMonitor() { _batterymonitor = Adafruit_INA228(); }
 
 void BatteryMonitor::begin() {
-    Serial.println("Initialise Adafruit INA228");
+    Console.println("Initialise Adafruit INA228");
 
     if (!_batterymonitor.begin()) {
-        Serial.println("Failed to find INA228 chip");
+        Console.println("Failed to find INA228 chip");
         return;
     }
 
-    Serial.println("Found INA228 chip\n");
+    Console.println("Found INA228 chip\n");
     _batterymonitor.setShunt(INA228_SHUNT_RESISTANCE, INA228_MAX_CURRENT);
 
     _batterymonitor.setAveragingCount(INA228_COUNT_16);
-    Serial.print("Averaging counts: 16 samples\n");
+    Console.print("Averaging counts: 16 samples\n");
 
     _batterymonitor.setVoltageConversionTime(INA228_TIME_150_us);
-    Serial.print("Voltage conversion time: "); Serial.print(_batterymonitor.getVoltageConversionTime()); Serial.print(" uS\n");
+    Console.print("Voltage conversion time: "); Console.print(_batterymonitor.getVoltageConversionTime()); Console.print(" uS\n");
 
     _batterymonitor.setCurrentConversionTime(INA228_TIME_280_us);
-    Serial.print("Current conversion time: "); Serial.print(_batterymonitor.getCurrentConversionTime()); Serial.print(" uS\n");
+    Console.print("Current conversion time: "); Console.print(_batterymonitor.getCurrentConversionTime()); Console.print(" uS\n");
 }
 
 BatteryMonitor::BatteryData BatteryMonitor::getData() {
@@ -41,12 +41,11 @@ void BatteryMonitor::printData() {
 }
 
 void BatteryMonitor::printData(BatteryData& data) {
-    Serial.print("Current: "); Serial.print(data.current, 3); Serial.print(" mA\n");
-    Serial.print("Voltage: "); Serial.print(data.voltage, 3); Serial.print(" V\n");
-    Serial.print("Shunt Voltage: "); Serial.print(data.shuntvoltage, 3); Serial.print(" mV\n");
-    Serial.print("Power: "); Serial.print(data.power, 3); Serial.print(" mW\n");
-    Serial.print("Energy: "); Serial.print(data.energy, 3); Serial.print(" J\n");
-    Serial.print("Charge: "); Serial.print(data.charge, 3); Serial.print(" C\n");
-    Serial.print("Temperature: "); Serial.print(data.temperature, 3); Serial.print(" *C\n");
-    Serial.println();
+    Console.print("A: "); Console.print(data.current); Console.print(" mA  ");
+    Console.print("V: "); Console.print(data.voltage); Console.print(" V  ");
+    Console.print("SV: "); Console.print(data.shuntvoltage); Console.print(" mV  ");
+    Console.print("P: "); Console.print(data.power); Console.print(" mW  ");
+    Console.print("E: "); Console.print(data.energy); Console.print(" J  ");
+    Console.print("C: "); Console.print(data.charge); Console.print(" C  ");
+    Console.print("Temp: "); Console.print(data.temperature); Console.print(" *C  ");
 }

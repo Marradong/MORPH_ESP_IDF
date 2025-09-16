@@ -13,6 +13,7 @@ public:
     void print();
     void process();
     bool home();
+    bool restart();
     bool left();
     bool right();
     bool up();

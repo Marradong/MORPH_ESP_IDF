@@ -2,6 +2,7 @@
 #define BATTERY_MONITOR_H
 
 #include <Arduino.h>
+#include <ArduinoConsole.h>
 #include <Adafruit_INA228.h>
 #include "constants.h"
 

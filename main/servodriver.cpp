@@ -8,24 +8,24 @@ constexpr uint16_t ServoDriver::SERVO_BOTTOM[SERVO_NUMBER];
 ServoDriver::ServoDriver() { _servodriver = Adafruit_PWMServoDriver(); }
 
 void ServoDriver::begin(){
-    Serial.println("Initialise Adafruit PCA9685");
+    Console.println("Initialise Adafruit PCA9685");
 
     if (!_servodriver.begin()) {
-        Serial.println("Failed to find PCA9685 chip");
+        Console.println("Failed to find PCA9685 chip");
         return;
     }
 
     _servodriver.reset();
-    Serial.print("PCA9685 chip reset\n");
+    Console.print("PCA9685 chip reset\n");
 
     _servodriver.setOutputMode(true);
-    Serial.print("Set output mode to push / pull\n");
+    Console.print("Set output mode to push / pull\n");
 
     _servodriver.setOscillatorFrequency(OSCILLATOR_FREQUENCY);
-    Serial.print("Oscillator frequency set to: "); Serial.print(OSCILLATOR_FREQUENCY); Serial.print(" Hz\n");
+    Console.print("Oscillator frequency set to: "); Console.print(OSCILLATOR_FREQUENCY); Console.print(" Hz\n");
 
     _servodriver.setPWMFreq(SERVO_FREQUENCY);
-    Serial.print("Servo frequency set to: "); Serial.print(SERVO_FREQUENCY); Serial.print(" Hz\n");
+    Console.print("Servo frequency set to: "); Console.print(SERVO_FREQUENCY); Console.print(" Hz\n");
 }
 
 void ServoDriver::driveServo(uint8_t servo, double angle) {

@@ -49,5 +49,6 @@
 #define LEFT 3
 #define RIGHT 4
 #define STOPPED 5
+#define RESTART 6
 
 #endif

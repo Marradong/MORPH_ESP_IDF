@@ -73,6 +73,9 @@ void updateState() {
   } else if (STATE != STOPPED && !blecontroller.up() && !blecontroller.down() && !blecontroller.left() && !blecontroller.right() && !blecontroller.home()) {
     STATE = STOPPED;
     Console.println("STOPPED");
+  } else if (STATE != RESTART && blecontroller.restart()){
+    STATE = RESTART;
+    Console.println("RESTART");
   }
 }
 
@@ -83,9 +86,9 @@ void setup() {
   Wire.begin();  // join i2c bus with SDA 21 and SCL 22 pins
   delay(10);
 
-  // batterymonitor.begin();
+  batterymonitor.begin();
 
-  // imu.begin();
+  imu.begin();
 
   servodriver.begin();
   delay(100);
@@ -96,12 +99,10 @@ void loop() {
   blecontroller.process();
 
   // batterymonitor.printData();
-  // Serial.println();
-  // delay(100);
+  // Console.println();
 
   // imu.printData();
-  // Serial.println();
-  // delay(100);
+  // Console.println();
 
   updateState();
 
@@ -122,6 +123,9 @@ void loop() {
       right();
       break;
     case STOPPED:
+      break;
+    case RESTART:
+      ESP.restart();
       break;
   }
 

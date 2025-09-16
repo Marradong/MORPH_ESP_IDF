@@ -110,6 +110,13 @@ bool BLEController::home() {
     return ctrl->miscButtons() == 0x01;
 }
 
+bool BLEController::restart() {
+    if (ctrl == nullptr) {
+        return false;
+    }
+    return ctrl->miscButtons() == 0x08;
+}
+
 bool BLEController::left() {
     if (ctrl == nullptr) {
         return false;
