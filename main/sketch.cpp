@@ -13,10 +13,10 @@ ServoDriver servodriver;
 
 uint8_t STATE = STOPPED;
 
-Leg legFL(servodriver, SERVO_FLF, SERVO_FLB, true);
-Leg legFR(servodriver, SERVO_FRF, SERVO_FRB, true);
-Leg legBL(servodriver, SERVO_BLF, SERVO_BLB, false);
-Leg legBR(servodriver, SERVO_BRF, SERVO_BRB, false);
+Leg legFL(servodriver, SERVO_FLF, SERVO_FLB, true, LAMBDA*RESOLUTION, 20);
+Leg legFR(servodriver, SERVO_FRF, SERVO_FRB, true, 3*LAMBDA*RESOLUTION, 20);
+Leg legBL(servodriver, SERVO_BLF, SERVO_BLB, false, 0, 20);
+Leg legBR(servodriver, SERVO_BRF, SERVO_BRB, false, 2*LAMBDA*RESOLUTION, 20);
 
 void home() {
   legFL.Home();
@@ -31,11 +31,6 @@ void forward() {
   legFR.Forward();
   legBL.Forward();
   legBR.Forward();
-
-  legFL.driveNextStep(100, 50);
-  legBR.driveNextStep(100, 50);
-  legFR.driveNextStep(100, 50);
-  legBL.driveNextStep(100, 50);
 }
 
 void reverse() {
@@ -43,35 +38,20 @@ void reverse() {
   legFR.Reverse();
   legBL.Reverse();
   legBR.Reverse();
-
-  legFL.driveNextStep(100, 50);
-  legBR.driveNextStep(100, 50);
-  legFR.driveNextStep(100, 50);
-  legBL.driveNextStep(100, 50);
 }
 
 void left() {
-  legFL.Forward();
-  legFR.Forward();
-  legBL.Forward();
-  legBR.Forward();
-
-  legFL.driveNextStep(50, 50);
-  legBR.driveNextStep(100, 50);
-  legFR.driveNextStep(100, 50);
-  legBL.driveNextStep(50, 50);
+  legFL.Turn(30);
+  legFR.Turn(100);
+  legBL.Turn(30);
+  legBR.Turn(100);
 }
 
 void right() {
-  legFL.Forward();
-  legFR.Forward();
-  legBL.Forward();
-  legBR.Forward();
-
-  legFL.driveNextStep(100, 50);
-  legBR.driveNextStep(50, 50);
-  legFR.driveNextStep(50, 50);
-  legBL.driveNextStep(100, 50);
+  legFL.Turn(100);
+  legFR.Turn(30);
+  legBL.Turn(100);
+  legBR.Turn(30);
 }
 
 void updateState() {
@@ -145,5 +125,5 @@ void loop() {
       break;
   }
 
-  delay(25);
+  delay(10);
 }

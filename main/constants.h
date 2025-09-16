@@ -35,16 +35,13 @@
 #define SERVO_FRB 7 // 108, 548
 
 #define RESOLUTION 100
-#define HALF_RESOLUTION (RESOLUTION/2)
 
 #define WORKSPACE_X_MIN -50
 #define WORKSPACE_X_MAX 50
 #define WORKSPACE_Y_MIN 50
 #define WORKSPACE_Y_MAX 100
 
-#define TS 1.0
-#define LAMBDA 0.5
-#define DT ((LAMBDA*TS)/(HALF_RESOLUTION-1))
+#define LAMBDA 0.25
 
 #define HOME 0
 #define FORWARD 1
