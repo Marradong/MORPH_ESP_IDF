@@ -51,7 +51,9 @@
 #define REVERSE 2
 #define LEFT 3
 #define RIGHT 4
-#define STOPPED 5
-#define RESTART 6
+#define UP 5
+#define DOWN 6
+#define STOPPED 7
+#define RESTART 8
 
 #endif

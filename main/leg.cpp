@@ -1,21 +1,22 @@
 #include "leg.h"
 
-Leg::Leg(ServoDriver& servodriver, int servo_phi_2, int servo_phi_5, bool isFront, int stepOffset, int stepHeight) : 
+Leg::Leg(ServoDriver& servodriver, int servo_phi_2, int servo_phi_5, bool isFront, int gaitOffset, int stepHeight) : 
     servodriver(servodriver), 
     servo_phi_2(servo_phi_2), 
     servo_phi_5(servo_phi_5), 
     isFront(isFront), 
-    stepOffset(stepOffset),
+    gaitOffset(gaitOffset),
+    stepOffset(WORKSPACE_Y_MIN),
     stepHeight(stepHeight),
     isReverse(false),
-    stepindex(0 + stepOffset) {
+    stepindex(0 + gaitOffset) {
 }
 
 void Leg::Home() {
     KinematicsData data;
-    stepindex = 0 + stepOffset;
+    stepindex = 0 + gaitOffset;
     driveNextStep(100);
-    stepindex = 0 + stepOffset;
+    stepindex = 0 + gaitOffset;
 }
 
 void Leg::driveLeg(double phi_2, double phi_5) {
@@ -30,7 +31,7 @@ void Leg::driveFullStep(double stepLength) {
         driveLeg(data.kinematics[i].phi_2, data.kinematics[i].phi_5);
         delay(15);
     }
-    stepindex = 0 + stepOffset;
+    stepindex = 0 + gaitOffset;
 }
 
 void Leg::driveNextStep(double stepLength) {
@@ -55,14 +56,14 @@ void Leg::generateNextStep(KinematicsData& data, double stepLength, int idx) {
         double sigma = (RAD_360 * idx) / ((LAMBDA * RESOLUTION) - 1);
         ik(data, 
             ((stepLength * (sigma - sin(sigma)) / (RAD_360))) + (-stepLength/2) , 
-            -((stepHeight * (1 - cos(sigma)) / 2)) + (WORKSPACE_Y_MIN + stepHeight)
+            -((stepHeight * (1 - cos(sigma)) / 2)) + (stepOffset + stepHeight)
         );
     }
     else if (idx < RESOLUTION){
         double dx = stepLength / (((1-LAMBDA) * RESOLUTION) - 1);
         ik(data, 
             (stepLength/2) - (idx-(LAMBDA * RESOLUTION)) * dx, 
-            WORKSPACE_Y_MIN + stepHeight
+            stepOffset + stepHeight
         );
     }
 }
@@ -149,4 +150,32 @@ void Leg::Turn(double stepLength) {
 
 void Leg::StepHeight(int height) {
     stepHeight = height;
+}
+
+void Leg::Up() {
+    if (stepOffset + 1 + stepHeight > WORKSPACE_Y_MAX) {
+        stepOffset = WORKSPACE_Y_MAX - stepHeight;
+    } else {
+        stepOffset++;
+    }
+
+    stepindex = isReverse ? (stepindex + 1) : (stepindex - 1);
+    if (stepindex >= RESOLUTION) stepindex = 0;
+    if (stepindex < 0) stepindex = RESOLUTION - 1;
+
+    driveNextStep(STEP_LONG);
+}
+
+void Leg::Down() {
+    if (stepOffset - 1 < WORKSPACE_Y_MIN) {
+        stepOffset = WORKSPACE_Y_MIN;
+    } else {
+        stepOffset--;
+    }
+
+    stepindex = isReverse ? (stepindex + 1) : (stepindex - 1);
+    if (stepindex >= RESOLUTION) stepindex = 0;
+    if (stepindex < 0) stepindex = RESOLUTION - 1;
+
+    driveNextStep(STEP_LONG);
 }

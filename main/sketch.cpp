@@ -54,6 +54,20 @@ void right() {
   legBR.Turn(STEP_SHORT);
 }
 
+void up(){
+  legFL.Up();
+  legFR.Up();
+  legBL.Up();
+  legBR.Up();
+}
+
+void down(){
+  legFL.Down();
+  legFR.Down();
+  legBL.Down();
+  legBR.Down();
+}
+
 void updateState() {
   if (STATE != HOME && blecontroller.home()) {
     STATE = HOME;
@@ -70,6 +84,12 @@ void updateState() {
   } else if (STATE != RIGHT && blecontroller.right()) {
     STATE = RIGHT;
     Console.println("RIGHT");
+  } else if (STATE != UP && blecontroller.up()) {
+    STATE = UP;
+    Console.println("UP");
+  } else if (STATE != DOWN && blecontroller.down()) {
+    STATE = DOWN;
+    Console.println("DOWN");
   } else if (STATE != STOPPED && blecontroller.stopped()) {
     STATE = STOPPED;
     Console.println("STOPPED");
@@ -84,10 +104,10 @@ void setup() {
   Wire.begin();
   delay(10);
   
-  batterymonitor.begin();
+  // batterymonitor.begin();
   delay(10);
   
-  imu.begin();
+  // imu.begin();
   delay(10);
   
   servodriver.begin();
@@ -100,9 +120,9 @@ void setup() {
 void loop() {
   blecontroller.process();
 
-  batterymonitor.printData();
+  // batterymonitor.printData();
 
-  imu.printData();
+  // imu.printData();
 
   updateState();
 
@@ -121,6 +141,12 @@ void loop() {
       break;
     case RIGHT:
       right();
+      break;
+    case UP:
+      up();
+      break;
+    case DOWN:
+      down();
       break;
     case STOPPED:
       break;

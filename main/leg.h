@@ -20,7 +20,7 @@ public:
         int size;
     };
 
-    Leg(ServoDriver& servodriver, int servo_phi_2, int servo_phi_5, bool isFront, int stepOffset, int stepHeight);
+    Leg(ServoDriver& servodriver, int servo_phi_2, int servo_phi_5, bool isFront, int gaitOffset, int stepHeight);
     void driveFullStep(double stepLength);
     void driveNextStep(double stepLength);
     void Home();
@@ -28,6 +28,8 @@ public:
     void Forward();
     void Turn(double stepLength);
     void StepHeight(int stepHeight);
+    void Up();
+    void Down();
 
 private:
     // Servo
@@ -36,6 +38,7 @@ private:
     int servo_phi_5;
     bool isFront;
     bool isReverse;
+    int gaitOffset;
     int stepOffset;
     int stepHeight;
     void driveLeg(double phi_2, double phi_5);
