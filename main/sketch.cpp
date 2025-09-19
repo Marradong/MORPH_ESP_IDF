@@ -4,13 +4,11 @@
 #include "imu.h"
 #include "leg.h"
 #include "servodriver.h"
-#include "wifiserver.h"
 
 BLEController blecontroller;
 BatteryMonitor batterymonitor;
 IMU imu;
 ServoDriver servodriver;
-WIFIServer wifiserver;
 
 uint8_t STATE = STOPPED;
 
@@ -109,10 +107,10 @@ void setup() {
   Wire.begin();
   delay(10);
   
-  // batterymonitor.begin();
+  batterymonitor.begin();
   delay(10);
   
-  // imu.begin();
+  imu.begin();
   delay(10);
   
   servodriver.begin();
@@ -120,9 +118,6 @@ void setup() {
   
   blecontroller.begin();
   delay(10);
-
-  wifiserver.begin();
-  delay(100);
 }
 
 void loop() {
@@ -131,8 +126,6 @@ void loop() {
   batterymonitor.getData(batteryData);
 
   imu.getData(imuData);
-
-  wifiserver.handleClient(ctrlData, imuData, batteryData);
 
   updateState();
 
