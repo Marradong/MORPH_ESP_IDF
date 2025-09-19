@@ -2,27 +2,30 @@
 #define CONTROLLER_H
 
 #include "sdkconfig.h"
-#include <Arduino.h>
 #include <Bluepad32.h>
 
 class BLEController {
 public:
+    struct BLEControllerData {
+        bool home;
+        bool restart;
+        bool left;
+        bool right;
+        bool forward;
+        bool backward;
+        bool stopped;
+        bool up;
+        bool down;
+        uint32_t leftRight;
+        uint32_t upDown;
+    };
+
     BLEController();
 
     void begin();
-    void print();
-    void process();
-    bool home();
-    bool restart();
-    bool left();
-    bool right();
-    bool forward();
-    bool backward();
-    bool stopped();
-    bool up();
-    bool down();
-    uint32_t leftRight();
-    uint32_t upDown();
+    void printData();
+    void getData(BLEControllerData& data);
+    
 
 private:
     ControllerPtr ctrl;

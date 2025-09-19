@@ -1,6 +1,6 @@
 #include "batterymonitor.h"
 
-BatteryMonitor::BatteryMonitor() { _batterymonitor = Adafruit_INA228(); }
+BatteryMonitor::BatteryMonitor() : _batterymonitor(Adafruit_INA228()) {}
 
 void BatteryMonitor::begin() {
     Console.println("Initialise Adafruit INA228");
@@ -18,8 +18,7 @@ void BatteryMonitor::begin() {
     _batterymonitor.setCurrentConversionTime(INA228_TIME_280_us);
 }
 
-BatteryMonitor::BatteryData BatteryMonitor::getData() {
-    BatteryMonitor::BatteryData data;
+void BatteryMonitor::getData(BatteryData& data) {
     data.current = _batterymonitor.getCurrent_mA();
     data.voltage = _batterymonitor.getBusVoltage_V();
     data.shuntvoltage = _batterymonitor.getShuntVoltage_mV();
@@ -27,12 +26,6 @@ BatteryMonitor::BatteryData BatteryMonitor::getData() {
     data.energy = _batterymonitor.readEnergy();
     data.charge = _batterymonitor.readCharge();
     data.temperature = _batterymonitor.readDieTemp();
-    return data;
-}
-
-void BatteryMonitor::printData() {
-    BatteryData data = getData();
-    printData(data);
 }
 
 void BatteryMonitor::printData(BatteryData& data) {

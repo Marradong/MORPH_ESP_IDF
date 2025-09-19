@@ -5,7 +5,8 @@ set(srcs
         "controller.cpp"
         "imu.cpp"
         "leg.cpp"
-        "servodriver.cpp")
+        "servodriver.cpp"
+        "wifiserver.cpp")
 
 set(requires "bluepad32" "bluepad32_arduino" "arduino" "btstack")
 

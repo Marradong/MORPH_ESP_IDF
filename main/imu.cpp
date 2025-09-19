@@ -1,6 +1,6 @@
 #include "imu.h"
 
-IMU::IMU() { _imu = Adafruit_ICM20948(); }
+IMU::IMU() : _imu(Adafruit_ICM20948()) {}
 
 void IMU::begin() {
     Console.println("Initialise Adafruit ICM20948");
@@ -19,10 +19,8 @@ void IMU::begin() {
     _imu.setMagDataRate(AK09916_MAG_DATARATE_10_HZ);
 }
 
-IMU::IMUData IMU::getData() {
-    IMU::IMUData data;
+void IMU::getData(IMUData& data) {
     _imu.getEvent(&data.accelerometer, &data.gyroscope, &data.temperature, &data.magnetometer);
-    return data;
 }
 
 void IMU::printData(IMUData& data) {
@@ -30,9 +28,4 @@ void IMU::printData(IMUData& data) {
     Console.printf("Acc X: %d Y: %d Z: %d m/s^2  ", data.accelerometer.acceleration.x, data.accelerometer.acceleration.y, data.accelerometer.acceleration.z);
     Console.printf("Mag X: %d Y: %d Z: %d uT  ", data.magnetometer.magnetic.x, data.magnetometer.magnetic.y, data.magnetometer.magnetic.z);
     Console.printf("Gyro X: %d Y: %d Z: %d rad/s  ", data.gyroscope.gyro.x, data.gyroscope.gyro.y, data.gyroscope.gyro.z);
-}
-
-void IMU::printData() {
-    IMUData data = getData();;
-    printData(data);
 }

@@ -1,7 +1,6 @@
 #ifndef SERVO_DRIVER_H
 #define SERVO_DRIVER_H 
 
-#include <Arduino.h>
 #include <ArduinoConsole.h>
 #include <Adafruit_PWMServoDriver.h>
 #include <Wire.h>

@@ -1,7 +1,6 @@
 #ifndef IMU_H
 #define IMU_H
 
-#include <Arduino.h>
 #include <ArduinoConsole.h>
 #include <Adafruit_ICM20X.h>
 #include <Adafruit_ICM20948.h>
@@ -20,9 +19,8 @@ public:
 
     IMU();
     void begin();
-    void printData();
     void printData(IMUData& data);
-    IMUData getData();
+    void getData(IMUData& data);
 
 private:
     Adafruit_ICM20948 _imu;

@@ -1,7 +1,6 @@
 #ifndef BATTERY_MONITOR_H
 #define BATTERY_MONITOR_H
 
-#include <Arduino.h>
 #include <ArduinoConsole.h>
 #include <Adafruit_INA228.h>
 #include "constants.h"
@@ -20,9 +19,8 @@ public:
 
     BatteryMonitor();
     void begin();
-    void printData();
     void printData(BatteryData& data);
-    BatteryData getData();
+    void getData(BatteryData& data);
 
 private:
     Adafruit_INA228 _batterymonitor;

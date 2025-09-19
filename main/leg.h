@@ -1,7 +1,6 @@
 #ifndef LEG_H
 #define LEG_H
 
-#include <Arduino.h>
 #include <ArduinoConsole.h>
 #include "servodriver.h"
 #include "constants.h"

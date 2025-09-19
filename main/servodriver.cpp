@@ -5,7 +5,7 @@ constexpr uint16_t ServoDriver::SERVO_MIN_PULSE[SERVO_NUMBER];
 constexpr uint16_t ServoDriver::SERVO_TOP[SERVO_NUMBER];
 constexpr uint16_t ServoDriver::SERVO_BOTTOM[SERVO_NUMBER];
 
-ServoDriver::ServoDriver() { _servodriver = Adafruit_PWMServoDriver(); }
+ServoDriver::ServoDriver() : _servodriver(Adafruit_PWMServoDriver()) {}
 
 void ServoDriver::begin(){
     Console.println("Initialise Adafruit PCA9685");

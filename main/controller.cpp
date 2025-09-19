@@ -2,10 +2,7 @@
 
 BLEController* BLEController::instance = nullptr;
 
-BLEController::BLEController() {
-    instance = this;
-    ctrl = nullptr;
-}
+BLEController::BLEController() : ctrl(nullptr) { instance = this; }
 
 void BLEController::begin() {
     Console.printf("Firmware: %s\n", BP32.firmwareVersion());
@@ -55,7 +52,7 @@ void BLEController::_onDisconnected(ControllerPtr ctl) {
     }
 }
 
-void BLEController::print() {
+void BLEController::printData() {
     if (ctrl == nullptr) {
         return;
     }
@@ -82,91 +79,24 @@ void BLEController::print() {
     );
 }
 
-void BLEController::process() {
+void BLEController::getData(BLEControllerData& data) {
     if (!BP32.update()){
         return;
     }
 
     if (ctrl && ctrl->isConnected() && ctrl->hasData()) {
         if (ctrl->isGamepad()) {
-            // print();
+            data.home = ctrl->miscButtons() == 0x01;
+            data.restart = ctrl->miscButtons() == 0x08;
+            data.left = ctrl->dpad() == 0x08;
+            data.right = ctrl->dpad() == 0x04;
+            data.forward = ctrl->dpad() == 0x01;
+            data.backward = ctrl->dpad() == 0x02;
+            data.up = ctrl->throttle() >= 512;
+            data.down = ctrl->brake() >= 512;
+            data.stopped = !data.forward && !data.backward && !data.left && !data.right && !data.home && !data.restart && !data.up && !data.down;
+            data.leftRight = ctrl->axisX();
+            data.upDown = ctrl->axisY();
         }
     }
-}
-
-bool BLEController::home() {
-    if (ctrl == nullptr) {
-        return false;
-    }
-    return ctrl->miscButtons() == 0x01;
-}
-
-bool BLEController::restart() {
-    if (ctrl == nullptr) {
-        return false;
-    }
-    return ctrl->miscButtons() == 0x08;
-}
-
-bool BLEController::left() {
-    if (ctrl == nullptr) {
-        return false;
-    }
-    return ctrl->dpad() == 0x08;
-}
-
-bool BLEController::right() {
-    if (ctrl == nullptr) {
-        return false;
-    }
-    return ctrl->dpad() == 0x04;
-}
-
-bool BLEController::forward() {
-    if (ctrl == nullptr) {
-        return false;
-    }
-    return ctrl->dpad() == 0x01;
-}
-
-bool BLEController::backward() {
-    if (ctrl == nullptr) {
-        return false;
-    }
-    return ctrl->dpad() == 0x02;
-}
-
-bool BLEController::stopped() {
-    if (ctrl == nullptr) {
-        return false;
-    }
-    return !forward() && !backward() && !left() && !right() && !home() && !restart() && !up() && !down();
-}
-
-bool BLEController::up() {
-    if (ctrl == nullptr) {
-        return false;
-    }
-    return ctrl->throttle() >= 512;
-}
-
-bool BLEController::down() {
-    if (ctrl == nullptr) {
-        return false;
-    }
-    return ctrl->brake() >= 512;
-}
-
-uint32_t BLEController::leftRight() {
-    if (ctrl == nullptr) {
-        return 0;
-    }
-    return ctrl->axisX();
-}
-
-uint32_t BLEController::upDown() {
-    if (ctrl == nullptr) {
-        return 0;
-    }
-    return ctrl->axisY();
 }
