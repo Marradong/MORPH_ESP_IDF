@@ -13,10 +13,10 @@ ServoDriver servodriver;
 
 uint8_t STATE = STOPPED;
 
-Leg legFL(servodriver, SERVO_FLF, SERVO_FLB, true, LAMBDA*RESOLUTION, 20);
-Leg legFR(servodriver, SERVO_FRF, SERVO_FRB, true, 3*LAMBDA*RESOLUTION, 20);
-Leg legBL(servodriver, SERVO_BLF, SERVO_BLB, false, 0, 20);
-Leg legBR(servodriver, SERVO_BRF, SERVO_BRB, false, 2*LAMBDA*RESOLUTION, 20);
+Leg legFL(servodriver, SERVO_FLF, SERVO_FLB, true, LAMBDA*RESOLUTION, STEP_HEIGHT);
+Leg legFR(servodriver, SERVO_FRF, SERVO_FRB, true, 3*LAMBDA*RESOLUTION, STEP_HEIGHT);
+Leg legBL(servodriver, SERVO_BLF, SERVO_BLB, false, 0, STEP_HEIGHT);
+Leg legBR(servodriver, SERVO_BRF, SERVO_BRB, false, 2*LAMBDA*RESOLUTION, STEP_HEIGHT);
 
 void home() {
   legFL.Home();
@@ -41,27 +41,27 @@ void reverse() {
 }
 
 void left() {
-  legFL.Turn(30);
-  legFR.Turn(100);
-  legBL.Turn(30);
-  legBR.Turn(100);
+  legFL.Turn(STEP_SHORT);
+  legFR.Turn(STEP_LONG);
+  legBL.Turn(STEP_SHORT);
+  legBR.Turn(STEP_LONG);
 }
 
 void right() {
-  legFL.Turn(100);
-  legFR.Turn(30);
-  legBL.Turn(100);
-  legBR.Turn(30);
+  legFL.Turn(STEP_LONG);
+  legFR.Turn(STEP_SHORT);
+  legBL.Turn(STEP_LONG);
+  legBR.Turn(STEP_SHORT);
 }
 
 void updateState() {
   if (STATE != HOME && blecontroller.home()) {
     STATE = HOME;
     Console.println("HOME");
-  } else if (STATE != FORWARD && blecontroller.up()) {
+  } else if (STATE != FORWARD && blecontroller.forward()) {
     STATE = FORWARD;
     Console.println("FORWARD");
-  } else if (STATE != REVERSE && blecontroller.down()) {
+  } else if (STATE != REVERSE && blecontroller.backward()) {
     STATE = REVERSE;
     Console.println("REVERSE");
   } else if (STATE != LEFT && blecontroller.left()) {
@@ -70,39 +70,39 @@ void updateState() {
   } else if (STATE != RIGHT && blecontroller.right()) {
     STATE = RIGHT;
     Console.println("RIGHT");
-  } else if (STATE != STOPPED && !blecontroller.up() && !blecontroller.down() && !blecontroller.left() && !blecontroller.right() && !blecontroller.home()) {
+  } else if (STATE != STOPPED && blecontroller.stopped()) {
     STATE = STOPPED;
     Console.println("STOPPED");
-  } else if (STATE != RESTART && blecontroller.restart()){
+  } else if (STATE != RESTART && blecontroller.restart()) {
     STATE = RESTART;
     Console.println("RESTART");
   }
 }
 
 
-// Arduino setup function. Runs in CPU 1
 void setup() {
-  blecontroller.begin();
-  Wire.begin();  // join i2c bus with SDA 21 and SCL 22 pins
+  Wire.begin();
   delay(10);
-
+  
   batterymonitor.begin();
-
+  delay(10);
+  
   imu.begin();
-
+  delay(10);
+  
   servodriver.begin();
+  delay(10);
+  
+  blecontroller.begin();
   delay(100);
 }
 
-// Arduino loop function. Runs in CPU 1.
 void loop() {
   blecontroller.process();
 
-  // batterymonitor.printData();
-  // Console.println();
+  batterymonitor.printData();
 
-  // imu.printData();
-  // Console.println();
+  imu.printData();
 
   updateState();
 

@@ -16,6 +16,9 @@ public:
     bool restart();
     bool left();
     bool right();
+    bool forward();
+    bool backward();
+    bool stopped();
     bool up();
     bool down();
     uint32_t leftRight();

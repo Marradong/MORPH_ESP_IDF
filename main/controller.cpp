@@ -12,16 +12,7 @@ void BLEController::begin() {
     const uint8_t* addr = BP32.localBdAddress();
     Console.printf("BD Addr: %2X:%2X:%2X:%2X:%2X:%2X\n", addr[0], addr[1], addr[2], addr[3], addr[4], addr[5]);
 
-    // Setup the Bluepad32 callbacks, and the default behavior for scanning or not.
-    // By default, if the "startScanning" parameter is not passed, it will do the "start scanning".
-    // Notice that "Start scanning" will try to auto-connect to devices that are compatible with Bluepad32.
-    // E.g: if a Gamepad, keyboard or mouse are detected, it will try to auto connect to them.
-    bool startScanning = true;
-    BP32.setup(&onConnected, &onDisconnected, startScanning);
-
-    // Enables the BLE Service in Bluepad32.
-    // This service allows clients, like a mobile app, to setup and see the state of Bluepad32.
-    // By default, it is disabled.
+    BP32.setup(&onConnected, &onDisconnected, true);
     BP32.enableBLEService(false);
 }
 
@@ -131,19 +122,41 @@ bool BLEController::right() {
     return ctrl->dpad() == 0x04;
 }
 
-bool BLEController::up() {
+bool BLEController::forward() {
     if (ctrl == nullptr) {
         return false;
     }
     return ctrl->dpad() == 0x01;
 }
 
-bool BLEController::down() {
+bool BLEController::backward() {
     if (ctrl == nullptr) {
         return false;
     }
     return ctrl->dpad() == 0x02;
 }
+
+bool BLEController::stopped() {
+    if (ctrl == nullptr) {
+        return false;
+    }
+    return !forward() && !backward() && !left() && !right() && !home() && !restart() && !up() && !down();
+}
+
+bool BLEController::up() {
+    if (ctrl == nullptr) {
+        return false;
+    }
+    return ctrl->throttle() >= 512;
+}
+
+bool BLEController::down() {
+    if (ctrl == nullptr) {
+        return false;
+    }
+    return ctrl->brake() >= 512;
+}
+
 uint32_t BLEController::leftRight() {
     if (ctrl == nullptr) {
         return 0;

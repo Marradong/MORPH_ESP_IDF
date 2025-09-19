@@ -18,7 +18,6 @@
 #define L_2_5 48.5
 #define L_3_4 92.8
 
-
 #define OSCILLATOR_FREQUENCY 25000000
 #define SERVO_FREQUENCY 50
 #define SERVO_NUMBER 8
@@ -40,6 +39,10 @@
 #define WORKSPACE_X_MAX 50
 #define WORKSPACE_Y_MIN 50
 #define WORKSPACE_Y_MAX 100
+
+#define STEP_HEIGHT 20
+#define STEP_LONG 100
+#define STEP_SHORT 30
 
 #define LAMBDA 0.25
 

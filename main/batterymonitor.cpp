@@ -11,16 +11,11 @@ void BatteryMonitor::begin() {
     }
 
     Console.println("Found INA228 chip\n");
+
     _batterymonitor.setShunt(INA228_SHUNT_RESISTANCE, INA228_MAX_CURRENT);
-
     _batterymonitor.setAveragingCount(INA228_COUNT_16);
-    Console.print("Averaging counts: 16 samples\n");
-
     _batterymonitor.setVoltageConversionTime(INA228_TIME_150_us);
-    Console.print("Voltage conversion time: "); Console.print(_batterymonitor.getVoltageConversionTime()); Console.print(" uS\n");
-
     _batterymonitor.setCurrentConversionTime(INA228_TIME_280_us);
-    Console.print("Current conversion time: "); Console.print(_batterymonitor.getCurrentConversionTime()); Console.print(" uS\n");
 }
 
 BatteryMonitor::BatteryData BatteryMonitor::getData() {
@@ -41,11 +36,11 @@ void BatteryMonitor::printData() {
 }
 
 void BatteryMonitor::printData(BatteryData& data) {
-    Console.print("A: "); Console.print(data.current); Console.print(" mA  ");
-    Console.print("V: "); Console.print(data.voltage); Console.print(" V  ");
-    Console.print("SV: "); Console.print(data.shuntvoltage); Console.print(" mV  ");
-    Console.print("P: "); Console.print(data.power); Console.print(" mW  ");
-    Console.print("E: "); Console.print(data.energy); Console.print(" J  ");
-    Console.print("C: "); Console.print(data.charge); Console.print(" C  ");
-    Console.print("Temp: "); Console.print(data.temperature); Console.print(" *C  ");
+    Console.printf("\nA: %d mA  ", data.current);
+    Console.printf("V: %d V  ", data.voltage);
+    Console.printf("SV: %d mV  ", data.shuntvoltage);
+    Console.printf("P: %d mW  ", data.power);
+    Console.printf("E: %d J  ", data.energy);
+    Console.printf("C: %d C  ", data.charge);
+    Console.printf("Temp: %d *C  ", data.temperature);
 }

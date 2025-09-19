@@ -16,16 +16,9 @@ void ServoDriver::begin(){
     }
 
     _servodriver.reset();
-    Console.print("PCA9685 chip reset\n");
-
     _servodriver.setOutputMode(true);
-    Console.print("Set output mode to push / pull\n");
-
     _servodriver.setOscillatorFrequency(OSCILLATOR_FREQUENCY);
-    Console.print("Oscillator frequency set to: "); Console.print(OSCILLATOR_FREQUENCY); Console.print(" Hz\n");
-
     _servodriver.setPWMFreq(SERVO_FREQUENCY);
-    Console.print("Servo frequency set to: "); Console.print(SERVO_FREQUENCY); Console.print(" Hz\n");
 }
 
 void ServoDriver::driveServo(uint8_t servo, double angle) {

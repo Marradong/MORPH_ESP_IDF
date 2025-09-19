@@ -133,12 +133,12 @@ double Leg::mod(double a, double b) {
 
 void Leg::Reverse() {
     isReverse = true;
-    driveNextStep(100);
+    driveNextStep(STEP_LONG);
 }
 
 void Leg::Forward() {
     isReverse = false;
-    driveNextStep(100);
+    driveNextStep(STEP_LONG);
 }
 
 void Leg::Turn(double stepLength) {
