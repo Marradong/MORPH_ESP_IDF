@@ -12,10 +12,10 @@ ServoDriver servodriver;
 
 uint8_t STATE = STOPPED;
 
-Leg legFL(servodriver, SERVO_FLF, SERVO_FLB, true, LAMBDA*RESOLUTION, STEP_HEIGHT);
-Leg legFR(servodriver, SERVO_FRF, SERVO_FRB, true, 3*LAMBDA*RESOLUTION, STEP_HEIGHT);
-Leg legBL(servodriver, SERVO_BLF, SERVO_BLB, false, 0, STEP_HEIGHT);
-Leg legBR(servodriver, SERVO_BRF, SERVO_BRB, false, 2*LAMBDA*RESOLUTION, STEP_HEIGHT);
+Leg legFL(servodriver, SERVO_FLF, SERVO_FLB, true, LAMBDA*RESOLUTION);
+Leg legFR(servodriver, SERVO_FRF, SERVO_FRB, true, 3*LAMBDA*RESOLUTION);
+Leg legBL(servodriver, SERVO_BLF, SERVO_BLB, false, 0);
+Leg legBR(servodriver, SERVO_BRF, SERVO_BRB, false, 2*LAMBDA*RESOLUTION);
 
 BLEController::BLEControllerData ctrlData;
 IMU::IMUData imuData;
@@ -57,18 +57,32 @@ void right() {
   legBR.Turn(STEP_SHORT);
 }
 
-void up(){
-  legFL.Up();
-  legFR.Up();
-  legBL.Up();
-  legBR.Up();
+void legUp(){
+  legFL.LegUp();
+  legFR.LegUp();
+  legBL.LegUp();
+  legBR.LegUp();
 }
 
-void down(){
-  legFL.Down();
-  legFR.Down();
-  legBL.Down();
-  legBR.Down();
+void legDown(){
+  legFL.LegDown();
+  legFR.LegDown();
+  legBL.LegDown();
+  legBR.LegDown();
+}
+
+void stepUp(){
+  legFL.StepUp();
+  legFR.StepUp();
+  legBL.StepUp();
+  legBR.StepUp();
+}
+
+void stepDown(){
+  legFL.StepDown();
+  legFR.StepDown();
+  legBL.StepDown();
+  legBR.StepDown();
 }
 
 void updateState() {
@@ -87,12 +101,18 @@ void updateState() {
   } else if (STATE != RIGHT && ctrlData.right) {
     STATE = RIGHT;
     Console.println("RIGHT");
-  } else if (STATE != UP && ctrlData.up) {
-    STATE = UP;
-    Console.println("UP");
-  } else if (STATE != DOWN && ctrlData.down) {
-    STATE = DOWN;
-    Console.println("DOWN");
+  } else if (STATE != LEG_UP && ctrlData.legUp) {
+    STATE = LEG_UP;
+    Console.println("LEG_UP");
+  } else if (STATE != LEG_DOWN && ctrlData.legDown) {
+    STATE = LEG_DOWN;
+    Console.println("LEG_DOWN");
+  } else if (STATE != STEP_UP && ctrlData.stepUp) {
+    STATE = STEP_UP;
+    Console.println("STEP_UP");
+  } else if (STATE != STEP_DOWN && ctrlData.stepDown) {
+    STATE = STEP_DOWN;
+    Console.println("STEP_DOWN");
   } else if (STATE != STOPPED && ctrlData.stopped) {
     STATE = STOPPED;
     Console.println("STOPPED");
@@ -145,11 +165,17 @@ void loop() {
     case RIGHT:
       right();
       break;
-    case UP:
-      up();
+    case LEG_UP:
+      legUp();
       break;
-    case DOWN:
-      down();
+    case LEG_DOWN:
+      legDown();
+      break;
+    case STEP_UP:
+      stepUp();
+      break;
+    case STEP_DOWN:
+      stepDown();
       break;
     case STOPPED:
       break;

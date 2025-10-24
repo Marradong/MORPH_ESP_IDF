@@ -40,7 +40,8 @@
 #define WORKSPACE_Y_MIN 50
 #define WORKSPACE_Y_MAX 100
 
-#define STEP_HEIGHT 20
+#define STEP_HEIGHT_MIN 20
+#define STEP_HEIGHT_MAX 50
 #define STEP_LONG 100
 #define STEP_SHORT 30
 
@@ -51,9 +52,11 @@
 #define REVERSE 2
 #define LEFT 3
 #define RIGHT 4
-#define UP 5
-#define DOWN 6
-#define STOPPED 7
-#define RESTART 8
+#define LEG_UP 5
+#define LEG_DOWN 6
+#define STEP_UP 7
+#define STEP_DOWN 8
+#define STOPPED 9
+#define RESTART 10
 
 #endif

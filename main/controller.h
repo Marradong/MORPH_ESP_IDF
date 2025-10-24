@@ -14,8 +14,10 @@ public:
         bool forward;
         bool backward;
         bool stopped;
-        bool up;
-        bool down;
+        bool legUp;
+        bool legDown;
+        bool stepUp;
+        bool stepDown;
         uint32_t leftRight;
         uint32_t upDown;
     };

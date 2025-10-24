@@ -1,13 +1,13 @@
 #include "leg.h"
 
-Leg::Leg(ServoDriver& servodriver, int servo_phi_2, int servo_phi_5, bool isFront, int gaitOffset, int stepHeight) : 
+Leg::Leg(ServoDriver& servodriver, int servo_phi_2, int servo_phi_5, bool isFront, int gaitOffset) : 
     servodriver(servodriver), 
     servo_phi_2(servo_phi_2), 
     servo_phi_5(servo_phi_5), 
     isFront(isFront), 
     gaitOffset(gaitOffset),
     stepOffset(WORKSPACE_Y_MIN),
-    stepHeight(stepHeight),
+    stepHeight(STEP_HEIGHT_MIN),
     isReverse(false),
     stepindex(0 + gaitOffset) {
 }
@@ -147,17 +147,28 @@ void Leg::Turn(double stepLength) {
     driveNextStep(stepLength);
 }
 
-
-void Leg::StepHeight(int height) {
-    stepHeight = height;
+void Leg::updateStepOffset() {
+    if (stepOffset + stepHeight > WORKSPACE_Y_MAX) {
+        stepOffset = WORKSPACE_Y_MAX - stepHeight;
+    }
+    if (stepOffset < WORKSPACE_Y_MIN) {
+        stepOffset = WORKSPACE_Y_MIN;
+    }
 }
 
-void Leg::Up() {
-    if (stepOffset + 1 + stepHeight > WORKSPACE_Y_MAX) {
-        stepOffset = WORKSPACE_Y_MAX - stepHeight;
-    } else {
-        stepOffset++;
+void Leg::updateStepHeight() {
+    if (stepHeight > STEP_HEIGHT_MAX) {
+        stepHeight = STEP_HEIGHT_MAX;
     }
+    if (stepHeight < STEP_HEIGHT_MIN) {
+        stepHeight = STEP_HEIGHT_MIN;
+    }
+}
+
+void Leg::LegUp() {
+    stepOffset++;
+
+    updateStepOffset();
 
     stepindex = isReverse ? (stepindex + 1) : (stepindex - 1);
     if (stepindex >= RESOLUTION) stepindex = 0;
@@ -166,12 +177,36 @@ void Leg::Up() {
     driveNextStep(STEP_LONG);
 }
 
-void Leg::Down() {
-    if (stepOffset - 1 < WORKSPACE_Y_MIN) {
-        stepOffset = WORKSPACE_Y_MIN;
-    } else {
-        stepOffset--;
-    }
+void Leg::LegDown() {
+    stepOffset--;
+
+    updateStepOffset();
+
+    stepindex = isReverse ? (stepindex + 1) : (stepindex - 1);
+    if (stepindex >= RESOLUTION) stepindex = 0;
+    if (stepindex < 0) stepindex = RESOLUTION - 1;
+
+    driveNextStep(STEP_LONG);
+}
+
+void Leg::StepUp() {
+    stepHeight++;
+
+    updateStepHeight();
+    updateStepOffset();
+
+    stepindex = isReverse ? (stepindex + 1) : (stepindex - 1);
+    if (stepindex >= RESOLUTION) stepindex = 0;
+    if (stepindex < 0) stepindex = RESOLUTION - 1;
+
+    driveNextStep(STEP_LONG);
+}
+
+void Leg::StepDown() {
+    stepHeight--;
+
+    updateStepHeight();
+    updateStepOffset();
 
     stepindex = isReverse ? (stepindex + 1) : (stepindex - 1);
     if (stepindex >= RESOLUTION) stepindex = 0;

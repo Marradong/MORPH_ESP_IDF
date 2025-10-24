@@ -92,9 +92,11 @@ void BLEController::getData(BLEControllerData& data) {
             data.right = ctrl->dpad() == 0x04;
             data.forward = ctrl->dpad() == 0x01;
             data.backward = ctrl->dpad() == 0x02;
-            data.up = ctrl->throttle() >= 512;
-            data.down = ctrl->brake() >= 512;
-            data.stopped = !data.forward && !data.backward && !data.left && !data.right && !data.home && !data.restart && !data.up && !data.down;
+            data.legUp = ctrl->throttle() >= 512;
+            data.legDown = ctrl->brake() >= 512;
+            data.stepUp = ctrl->buttons() == 0x0010;
+            data.stepDown = ctrl->buttons() == 0x0020;
+            data.stopped = !data.forward && !data.backward && !data.left && !data.right && !data.home && !data.restart && !data.legUp && !data.legDown && !data.stepUp && !data.stepDown;
             data.leftRight = ctrl->axisX();
             data.upDown = ctrl->axisY();
         }
