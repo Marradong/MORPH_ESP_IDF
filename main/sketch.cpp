@@ -85,6 +85,13 @@ void stepDown(){
   legBR.StepDown();
 }
 
+void changeTrajectory() {
+  legFL.ChangeTrajectory();
+  legFR.ChangeTrajectory();
+  legBL.ChangeTrajectory();
+  legBR.ChangeTrajectory();
+}
+
 void updateState() {
   if (STATE != HOME && ctrlData.home) {
     STATE = HOME;
@@ -113,6 +120,9 @@ void updateState() {
   } else if (STATE != STEP_DOWN && ctrlData.stepDown) {
     STATE = STEP_DOWN;
     Console.println("STEP_DOWN");
+  } else if (STATE != CHANGE_TRAJECTORY && ctrlData.changeTrajectory) {
+    STATE = CHANGE_TRAJECTORY;
+    Console.println("CHANGE_TRAJECTORY");
   } else if (STATE != STOPPED && ctrlData.stopped) {
     STATE = STOPPED;
     Console.println("STOPPED");
@@ -176,6 +186,9 @@ void loop() {
       break;
     case STEP_DOWN:
       stepDown();
+      break;
+    case CHANGE_TRAJECTORY:
+      changeTrajectory();
       break;
     case STOPPED:
       break;

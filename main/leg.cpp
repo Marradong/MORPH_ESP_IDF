@@ -9,6 +9,7 @@ Leg::Leg(ServoDriver& servodriver, int servo_phi_2, int servo_phi_5, bool isFron
     stepOffset(WORKSPACE_Y_MIN),
     stepHeight(STEP_HEIGHT_MIN),
     isReverse(false),
+    isCycloidal(true),
     stepindex(0 + gaitOffset) {
 }
 
@@ -52,6 +53,32 @@ void Leg::generateFullStep(TrajectoryData& data, double stepLength) {
 }
 
 void Leg::generateNextStep(KinematicsData& data, double stepLength, int idx) {
+    if (isCycloidal) {
+        cycloidalTrajectory(data, stepLength, idx);
+    } else {
+        sinusoidalTrajectory(data, stepLength, idx);
+    }
+}
+
+void Leg::sinusoidalTrajectory(KinematicsData& data, double stepLength, int idx) {
+    if (idx < LAMBDA * RESOLUTION){
+        double sigma = (RAD_360 * idx) / ((LAMBDA * RESOLUTION) - 1);
+        double x = stepLength * sigma / RAD_360 - (stepLength/2);
+        ik(data, 
+            x, 
+            -(stepHeight * sin((x * PI / stepLength) + RAD_90)) + (stepOffset + stepHeight)
+        );
+    }
+    else if (idx < RESOLUTION){
+        double dx = stepLength / (((1-LAMBDA) * RESOLUTION) - 1);
+        ik(data, 
+            (stepLength/2) - (idx-(LAMBDA * RESOLUTION)) * dx, 
+            stepOffset + stepHeight
+        );
+    }
+}
+
+void Leg::cycloidalTrajectory(KinematicsData& data, double stepLength, int idx) {
     if (idx < LAMBDA * RESOLUTION){
         double sigma = (RAD_360 * idx) / ((LAMBDA * RESOLUTION) - 1);
         ik(data, 
@@ -213,4 +240,8 @@ void Leg::StepDown() {
     if (stepindex < 0) stepindex = RESOLUTION - 1;
 
     driveNextStep(STEP_LONG);
+}
+
+void Leg::ChangeTrajectory() {
+    isCycloidal = !isCycloidal;
 }

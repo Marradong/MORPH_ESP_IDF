@@ -56,7 +56,8 @@
 #define LEG_DOWN 6
 #define STEP_UP 7
 #define STEP_DOWN 8
-#define STOPPED 9
-#define RESTART 10
+#define CHANGE_TRAJECTORY 9
+#define STOPPED 10
+#define RESTART 11
 
 #endif

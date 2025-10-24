@@ -30,27 +30,31 @@ public:
     void LegDown();
     void StepUp();
     void StepDown();
+    void ChangeTrajectory();
 
 private:
     // Servo
     ServoDriver& servodriver;
     int servo_phi_2;
     int servo_phi_5;
-    bool isFront;
-    bool isReverse;
-    int gaitOffset;
-    int stepOffset;
-    int stepHeight;
     void driveLeg(double phi_2, double phi_5);
     
     // Parameter Change
     void updateStepOffset();
     void updateStepHeight();
-
+    
     // Trajectory
     int stepindex;
+    bool isCycloidal;
+    bool isFront;
+    bool isReverse;
+    int gaitOffset;
+    int stepOffset;
+    int stepHeight;
     void generateFullStep(TrajectoryData& data, double stepLength);
     void generateNextStep(KinematicsData& data, double stepLength, int idx);
+    void cycloidalTrajectory(KinematicsData& data, double stepLength, int idx);
+    void sinusoidalTrajectory(KinematicsData& data, double stepLength, int idx);
 
     // Kinematics
     void ik(KinematicsData& data, double x, double y);

@@ -58,18 +58,22 @@ void BLEController::printData(BLEControllerData& data) {
     }
 
     Console.printf(
-        "idx: %d, home: %d, restart: %d, left: %d, right: %d, forward: %d, backward: %d, up: %d, down: %d, stopped: %d, x-axis: %4d, y-axis: %4d\n",
-        data.home;
-        data.restart;
-        data.left;
-        data.right;
-        data.forward;
-        data.backward;
-        data.up;
-        data.down;
-        data.stopped;
-        data.leftRight;
-        data.upDown;
+        "idx: %d, home: %d, restart: %d, left: %d, right: %d, forward: %d, backward: %d, legUp: %d, legDown: %d, stepUp: %d, stepDown: %d, changeTrajectory: %d, stopped: %d, x-axis: %4d, y-axis: %4d\n",
+        data.home,
+        data.restart,
+        data.left,
+        data.right,
+        data.forward,
+        data.backward,
+        data.legUp,
+        data.legDown,
+        data.stepUp,
+        data.stepDown,
+        data.changeTrajectory,
+        data.stopped,
+        data.leftRight,
+        data.upDown
+    );
 }
 
 void BLEController::getData(BLEControllerData& data) {
@@ -89,20 +93,24 @@ void BLEController::getData(BLEControllerData& data) {
             data.legDown = ctrl->brake() >= 512;
             data.stepUp = ctrl->buttons() == 0x0010;
             data.stepDown = ctrl->buttons() == 0x0020;
-            data.stopped = !data.forward && !data.backward && !data.left && !data.right && !data.home && !data.restart && !data.legUp && !data.legDown && !data.stepUp && !data.stepDown;
+            data.changeTrajectory = ctrl->buttons() == 0x0008;
+            data.stopped = !data.forward && !data.backward && !data.left && !data.right && !data.home && !data.restart && !data.legUp && !data.legDown && !data.stepUp && !data.stepDown && !data.changeTrajectory;
             data.leftRight = ctrl->axisX();
             data.upDown = ctrl->axisY();
         }
         else if (ctrl->isKeyboard()) {
             data.home = ctrl->isKeyPressed(Keyboard_H);
-            data.restart = ctrl->isKeyPressed(Keyboard_H);
+            data.restart = ctrl->isKeyPressed(Keyboard_R);
             data.left = ctrl->isKeyPressed(Keyboard_LeftArrow) || ctrl->isKeyPressed(Keyboard_A);
             data.right = ctrl->isKeyPressed(Keyboard_RightArrow) || ctrl->isKeyPressed(Keyboard_D);
             data.forward = ctrl->isKeyPressed(Keyboard_UpArrow) || ctrl->isKeyPressed(Keyboard_W);
             data.backward = ctrl->isKeyPressed(Keyboard_DownArrow) || ctrl->isKeyPressed(Keyboard_S);
-            data.up = ctrl->isKeyPressed(Keyboard_Q);
-            data.down = ctrl->isKeyPressed(Keyboard_E);
-            data.stopped = !data.forward && !data.backward && !data.left && !data.right && !data.home && !data.restart && !data.up && !data.down;
+            data.legUp = ctrl->isKeyPressed(Keyboard_Q);
+            data.legDown = ctrl->isKeyPressed(Keyboard_E);
+            data.stepUp = ctrl->isKeyPressed(Keyboard_Z);
+            data.stepDown = ctrl->isKeyPressed(Keyboard_X);
+            data.changeTrajectory = ctrl->isKeyPressed(Keyboard_T);
+            data.stopped = !data.forward && !data.backward && !data.left && !data.right && !data.home && !data.restart && !data.legUp && !data.legDown && !data.stepUp && !data.stepDown && !data.changeTrajectory;
             data.leftRight = 0;
             data.upDown = 0;
         }

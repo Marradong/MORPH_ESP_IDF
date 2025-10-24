@@ -18,6 +18,7 @@ public:
         bool legDown;
         bool stepUp;
         bool stepDown;
+        bool changeTrajectory;
         uint32_t leftRight;
         uint32_t upDown;
     };
@@ -25,7 +26,7 @@ public:
     BLEController();
 
     void begin();
-    void printData();
+    void printData(BLEControllerData& data);
     void getData(BLEControllerData& data);
     
 
