@@ -52,31 +52,24 @@ void BLEController::_onDisconnected(ControllerPtr ctl) {
     }
 }
 
-void BLEController::printData() {
+void BLEController::printData(BLEControllerData& data) {
     if (ctrl == nullptr) {
         return;
     }
 
     Console.printf(
-        "idx=%d, dpad: 0x%02x, buttons: 0x%04x, axis L: %4d, %4d, axis R: %4d, %4d, trigger L: %4d, trigger R: %4d, "
-        "misc: 0x%02x, gyro x:%6d y:%6d z:%6d, accel x:%6d y:%6d z:%6d\n",
-        ctrl->index(),        // Controller Index
-        ctrl->dpad(),         // D-pad
-        ctrl->buttons(),      // bitmask of pressed buttons
-        ctrl->axisX(),        // (-511 - 512) left X Axis
-        ctrl->axisY(),        // (-511 - 512) left Y axis
-        ctrl->axisRX(),       // (-511 - 512) right X axis
-        ctrl->axisRY(),       // (-511 - 512) right Y axis
-        ctrl->brake(),     // (0 - 1023): trigger L button
-        ctrl->throttle(),     // (0 - 1023): trigger R button
-        ctrl->miscButtons(),  // bitmask of pressed "misc" buttons
-        ctrl->gyroX(),        // Gyro X
-        ctrl->gyroY(),        // Gyro Y
-        ctrl->gyroZ(),        // Gyro Z
-        ctrl->accelX(),       // Accelerometer X
-        ctrl->accelY(),       // Accelerometer Y
-        ctrl->accelZ()        // Accelerometer Z
-    );
+        "idx: %d, home: %d, restart: %d, left: %d, right: %d, forward: %d, backward: %d, up: %d, down: %d, stopped: %d, x-axis: %4d, y-axis: %4d\n",
+        data.home;
+        data.restart;
+        data.left;
+        data.right;
+        data.forward;
+        data.backward;
+        data.up;
+        data.down;
+        data.stopped;
+        data.leftRight;
+        data.upDown;
 }
 
 void BLEController::getData(BLEControllerData& data) {
@@ -99,6 +92,19 @@ void BLEController::getData(BLEControllerData& data) {
             data.stopped = !data.forward && !data.backward && !data.left && !data.right && !data.home && !data.restart && !data.legUp && !data.legDown && !data.stepUp && !data.stepDown;
             data.leftRight = ctrl->axisX();
             data.upDown = ctrl->axisY();
+        }
+        else if (ctrl->isKeyboard()) {
+            data.home = ctrl->isKeyPressed(Keyboard_H);
+            data.restart = ctrl->isKeyPressed(Keyboard_H);
+            data.left = ctrl->isKeyPressed(Keyboard_LeftArrow) || ctrl->isKeyPressed(Keyboard_A);
+            data.right = ctrl->isKeyPressed(Keyboard_RightArrow) || ctrl->isKeyPressed(Keyboard_D);
+            data.forward = ctrl->isKeyPressed(Keyboard_UpArrow) || ctrl->isKeyPressed(Keyboard_W);
+            data.backward = ctrl->isKeyPressed(Keyboard_DownArrow) || ctrl->isKeyPressed(Keyboard_S);
+            data.up = ctrl->isKeyPressed(Keyboard_Q);
+            data.down = ctrl->isKeyPressed(Keyboard_E);
+            data.stopped = !data.forward && !data.backward && !data.left && !data.right && !data.home && !data.restart && !data.up && !data.down;
+            data.leftRight = 0;
+            data.upDown = 0;
         }
     }
 }
