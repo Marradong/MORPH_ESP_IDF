@@ -1,12 +1,13 @@
 #include "batterymonitor.h"
 
-BatteryMonitor::BatteryMonitor() : _batterymonitor(Adafruit_INA228()) {}
+BatteryMonitor::BatteryMonitor() : _batterymonitor(Adafruit_INA228()), _initialised(false) {}
 
 void BatteryMonitor::begin() {
     Console.println("Initialise Adafruit INA228");
 
     if (!_batterymonitor.begin()) {
         Console.println("Failed to find INA228 chip");
+        _initialised = false;
         return;
     }
 
@@ -16,6 +17,12 @@ void BatteryMonitor::begin() {
     _batterymonitor.setAveragingCount(INA228_COUNT_16);
     _batterymonitor.setVoltageConversionTime(INA228_TIME_150_us);
     _batterymonitor.setCurrentConversionTime(INA228_TIME_280_us);
+
+    _initialised = true;
+}
+
+bool BatteryMonitor::isInitialised() {
+    return _initialised;
 }
 
 void BatteryMonitor::getData(BatteryData& data) {

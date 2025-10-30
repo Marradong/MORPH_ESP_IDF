@@ -28,6 +28,7 @@ public:
     void begin();
     void printData(BLEControllerData& data);
     void getData(BLEControllerData& data);
+    bool isConnected();
     
 
 private:

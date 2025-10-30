@@ -35,10 +35,12 @@ public:
     ServoDriver();
     void begin();
     void driveServo(uint8_t servo, double angle);
+    bool isInitialised();
 
 private:
     Adafruit_PWMServoDriver  _servodriver;
     long pulseFromAngle(uint8_t servo, double angle);
+    bool _initialised;
 };
 
 #endif

@@ -5,13 +5,14 @@ constexpr uint16_t ServoDriver::SERVO_MIN_PULSE[SERVO_NUMBER];
 constexpr uint16_t ServoDriver::SERVO_TOP[SERVO_NUMBER];
 constexpr uint16_t ServoDriver::SERVO_BOTTOM[SERVO_NUMBER];
 
-ServoDriver::ServoDriver() : _servodriver(Adafruit_PWMServoDriver()) {}
+ServoDriver::ServoDriver() : _servodriver(Adafruit_PWMServoDriver()), _initialised(false) {}
 
 void ServoDriver::begin(){
     Console.println("Initialise Adafruit PCA9685");
 
     if (!_servodriver.begin()) {
         Console.println("Failed to find PCA9685 chip");
+        _initialised = false;
         return;
     }
 
@@ -19,6 +20,12 @@ void ServoDriver::begin(){
     _servodriver.setOutputMode(true);
     _servodriver.setOscillatorFrequency(OSCILLATOR_FREQUENCY);
     _servodriver.setPWMFreq(SERVO_FREQUENCY);
+
+    _initialised = true;
+}
+
+bool ServoDriver::isInitialised() {
+    return _initialised;
 }
 
 void ServoDriver::driveServo(uint8_t servo, double angle) {

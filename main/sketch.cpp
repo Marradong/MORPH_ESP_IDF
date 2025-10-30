@@ -151,11 +151,17 @@ void setup() {
 }
 
 void loop() {
-  blecontroller.getData(ctrlData);
+  if (blecontroller.isConnected()) {
+    blecontroller.getData(ctrlData);
+  }
+  
+  if (batterymonitor.isInitialised()) {
+    batterymonitor.getData(batteryData);
+  }
 
-  batterymonitor.getData(batteryData);
-
-  imu.getData(imuData);
+  if (imu.isInitialised()) {
+    imu.getData(imuData);
+  }
 
   updateState();
 

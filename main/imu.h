@@ -21,9 +21,11 @@ public:
     void begin();
     void printData(IMUData& data);
     void getData(IMUData& data);
+    bool isInitialised();
 
 private:
     Adafruit_ICM20948 _imu;
+    bool _initialised;
 };
 
 

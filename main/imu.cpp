@@ -1,12 +1,13 @@
 #include "imu.h"
 
-IMU::IMU() : _imu(Adafruit_ICM20948()) {}
+IMU::IMU() : _imu(Adafruit_ICM20948()), _initialised(false) {}
 
 void IMU::begin() {
     Console.println("Initialise Adafruit ICM20948");
 
     if (!_imu.begin_I2C()) {
         Console.println("Failed to find ICM20948 chip");
+        _initialised = false;
         return;
     }
 
@@ -17,6 +18,12 @@ void IMU::begin() {
     _imu.setAccelRateDivisor(IMU_ACCELEROMETER_DIVISOR);
     _imu.setGyroRateDivisor(IMU_GYROSCOPE_DIVISOR);
     _imu.setMagDataRate(AK09916_MAG_DATARATE_10_HZ);
+
+    _initialised = true;
+}
+
+bool IMU::isInitialised() {
+    return _initialised;
 }
 
 void IMU::getData(IMUData& data) {

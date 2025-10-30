@@ -21,9 +21,11 @@ public:
     void begin();
     void printData(BatteryData& data);
     void getData(BatteryData& data);
+    bool isInitialised();
 
 private:
     Adafruit_INA228 _batterymonitor;
+    bool _initialised;
 };
 
 #endif

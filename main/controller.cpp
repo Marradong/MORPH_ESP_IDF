@@ -52,6 +52,10 @@ void BLEController::_onDisconnected(ControllerPtr ctl) {
     }
 }
 
+bool BLEController::isConnected() {
+    return (ctrl != nullptr) && ctrl->isConnected();
+}
+
 void BLEController::printData(BLEControllerData& data) {
     if (ctrl == nullptr) {
         return;
