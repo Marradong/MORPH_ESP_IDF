@@ -1,5 +1,5 @@
 # Ignore Library files
-.pio/libdeps/
+.pio/
 
 # Ignore WiFi credentials
 main/WIFIConfig.h
